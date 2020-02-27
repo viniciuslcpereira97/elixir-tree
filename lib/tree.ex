@@ -1,36 +1,24 @@
 defmodule Tree do
     alias Tree.Node
 
-    def build do
-        event_data = %{name: :root}
+    def build(%{changes: changes, data: %Tree.Schema.Event{}} = _root) do
+        childs = changes.sessions
+        |> Enum.map(&build/1)
 
-        session_x_data = %{name: :session_x}
-        session_y_data = %{name: :session_y}
+        %{name: changes.title, childs: childs}
+        |> Node.new()
+    end
 
-        ticket_a_data = %{name: :ticket_a}
-        ticket_b_data = %{name: :ticket_b}
+    def build(%{changes: changes, data: %Tree.Schema.Session{}} = _root) do
+        childs = changes.tickets
+        |> Enum.map(&build/1)
 
-        # Nodes
-        event = event_data |> Node.new
+        %{name: changes.title, childs: childs}
+        |> Node.new()
+    end
 
-        session_x = session_x_data |> Node.new
-        session_y = session_y_data |> Node.new
-
-        ticket_a = ticket_a_data |> Node.new
-        ticket_b = ticket_b_data |> Node.new
-
-        # Creating Tree
-        session_x = session_x
-        |> Node.add_child(ticket_b)
-
-        session_y = session_y
-        |> Node.add_child(ticket_b)
-        |> Node.add_child(ticket_a)
-
-        event = event
-        |> Node.add_child(session_x)
-
-        event = event
-        |> Node.add_child(session_y)
+    def build(%{changes: changes, data: %Tree.Schema.Ticket{}} = _root) do
+        %{name: changes.title}
+        |> Node.new()
     end
 end

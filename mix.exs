@@ -19,7 +19,8 @@ defmodule TreeTest.MixProject do
 
   defp deps do
     [
-      {:benchee, "~> 0.9"}
+      {:benchee, "~> 0.9"},
+      {:ecto_sql, "~> 3.0"}
     ]
   end
 end
